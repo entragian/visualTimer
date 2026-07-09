@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="description" content="Offline chain timer for rehab training sessions." />
+    <meta name="apple-mobile-web-app-title" content="visualTimer" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+    <title>visualTimer</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">visualTimer</p>
+          <h1>Chain timer for rehab sessions</h1>
+          <p class="subtitle">
+            Build repeatable blocks of steps, save them locally, and run them offline.
+          </p>
+        </div>
+        <div class="topbar-actions">
+          <button id="new-session-btn" class="primary">New session</button>
+          <button id="save-btn">Save</button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <aside class="panel sidebar">
+          <div class="panel-header">
+            <h2>Sessions</h2>
+            <span id="session-count" class="muted"></span>
+          </div>
+          <div id="session-list" class="stack"></div>
+        </aside>
+
+        <section class="panel editor">
+          <div class="panel-header">
+            <h2>Editor</h2>
+            <span class="muted">Session, blocks, steps, repeat counts</span>
+          </div>
+
+          <label class="field">
+            <span>Session name</span>
+            <input id="session-name" type="text" />
+          </label>
+
+          <div class="section-head">
+            <h3>Blocks</h3>
+            <button id="add-block-btn">Add block</button>
+          </div>
+
+          <div id="block-list" class="stack"></div>
+        </section>
+
+        <section class="panel preview">
+          <div class="panel-header">
+            <h2>Player</h2>
+            <span class="muted">Playback state and flattened execution order</span>
+          </div>
+
+          <div class="preview-card player-card">
+            <div class="player-header">
+              <div>
+                <p class="preview-label">Current step</p>
+                <h3 id="player-step-name">No step selected</h3>
+                <p id="player-meta" class="muted">Select a session and press Start.</p>
+              </div>
+              <div class="time-wrap">
+                <div id="player-time" class="player-time">00:00</div>
+                <div id="player-status" class="status-pill">Idle</div>
+              </div>
+            </div>
+
+            <div class="progress-outer" aria-hidden="true">
+              <div id="player-progress" class="progress-inner"></div>
+            </div>
+
+            <div class="player-actions">
+              <button id="player-reset-btn">Reset</button>
+              <button id="player-prev-btn">Previous</button>
+              <button id="player-start-btn" class="primary">Start</button>
+              <button id="player-pause-btn">Pause</button>
+              <button id="player-next-btn">Next</button>
+              <button id="training-open-btn">Training mode</button>
+            </div>
+          </div>
+
+          <div class="preview-card">
+            <p class="preview-label">Current structure</p>
+            <div id="flattened-preview" class="sequence"></div>
+          </div>
+
+          <div class="preview-card">
+            <p class="preview-label">V1 build order</p>
+            <ol class="roadmap">
+              <li>Editor CRUD for sessions, blocks, and steps.</li>
+              <li>Flatten the chain for playback.</li>
+              <li>Timer player with pause, resume, skip, and finish state.</li>
+              <li>Local persistence and offline PWA support.</li>
+            </ol>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <section id="training-mode" class="training-mode" aria-hidden="true">
+      <div class="training-topbar">
+        <div>
+          <p id="training-session" class="eyebrow">visualTimer</p>
+          <h2 id="training-block">No block selected</h2>
+        </div>
+        <button id="training-close-btn">Exit</button>
+      </div>
+
+      <div class="training-stage">
+        <div id="training-round" class="training-round">Round 0 of 0</div>
+        <h1 id="training-step">No step selected</h1>
+        <div id="training-time" class="training-time">00:00</div>
+        <p id="training-note" class="training-note">Start a session to enter training mode.</p>
+
+        <div class="training-progress" aria-hidden="true">
+          <div id="training-progress-fill"></div>
+        </div>
+
+        <div class="training-context">
+          <div>
+            <span>Previous</span>
+            <strong id="training-prev-step">None</strong>
+          </div>
+          <div>
+            <span>Status</span>
+            <strong id="training-status">Idle</strong>
+          </div>
+          <div>
+            <span>Next</span>
+            <strong id="training-next-step">None</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="training-controls">
+        <button id="training-reset-btn">Reset</button>
+        <button id="training-prev-btn">Previous</button>
+        <button id="training-start-btn" class="primary">Start</button>
+        <button id="training-pause-btn">Pause</button>
+        <button id="training-next-btn">Next</button>
+      </div>
+    </section>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="visualTimer icon">
+  <rect width="512" height="512" rx="112" fill="#07111f" />
+  <circle cx="256" cy="256" r="170" fill="none" stroke="#1e293b" stroke-width="42" />
+  <path
+    d="M256 86a170 170 0 0 1 147 255"
+    fill="none"
+    stroke="#38bdf8"
+    stroke-linecap="round"
+    stroke-width="42"
+  />
+  <path
+    d="M256 86a170 170 0 0 1 86 24"
+    fill="none"
+    stroke="#22c55e"
+    stroke-linecap="round"
+    stroke-width="42"
+  />
+  <circle cx="256" cy="256" r="86" fill="#0f172a" stroke="#7dd3fc" stroke-width="10" />
+  <path d="M256 154v102l70 42" fill="none" stroke="#e8eefb" stroke-linecap="round" stroke-linejoin="round" stroke-width="26" />
+  <rect x="206" y="44" width="100" height="42" rx="21" fill="#7dd3fc" />
+  <rect x="232" y="24" width="48" height="42" rx="20" fill="#e8eefb" />
+</svg>
