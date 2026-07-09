@@ -32,6 +32,7 @@ body {
 
 body {
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 button,
@@ -466,6 +467,93 @@ h1 {
 }
 
 @media (max-width: 760px) {
+  body {
+    font-size: 15px;
+  }
+
+  button {
+    padding: 0.65rem 0.78rem;
+  }
+
+  .shell {
+    width: 100%;
+    padding: 12px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+  }
+
+  .topbar-actions,
+  .player-actions,
+  .step-actions {
+    width: 100%;
+  }
+
+  .topbar-actions button,
+  .player-actions button,
+  .step-actions button {
+    flex: 1 1 calc(50% - 8px);
+  }
+
+  .panel {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .panel-header,
+  .section-head,
+  .block-header,
+  .step-header,
+  .player-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .block-meta,
+  .step-meta {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .block-meta .field,
+  .step-meta .field {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .time-wrap {
+    justify-items: start;
+  }
+
+  .player-time {
+    font-size: 3rem;
+  }
+
+  .session-item {
+    grid-template-columns: 1fr;
+  }
+
+  .session-delete {
+    width: 100%;
+  }
+
+  .preview-card,
+  .block-card,
+  .step-card {
+    border-radius: 12px;
+    padding: 12px;
+  }
+
   .training-mode {
     padding: 18px;
   }
