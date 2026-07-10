@@ -156,12 +156,8 @@ function togglePanel(panelName) {
   panel.classList.toggle("collapsed");
   const collapsed = panel.classList.contains("collapsed");
   const toggle = panel.querySelector("[data-panel-toggle]");
-  const chevron = panel.querySelector(".panel-chevron");
 
   toggle?.setAttribute("aria-expanded", String(!collapsed));
-  if (chevron) {
-    chevron.textContent = collapsed ? "Expand" : "Collapse";
-  }
 
   persistPanelState();
 }
@@ -172,13 +168,9 @@ function restorePanelState() {
     const panelName = panel.dataset.panel;
     const collapsed = collapsedPanels.includes(panelName);
     const toggle = panel.querySelector("[data-panel-toggle]");
-    const chevron = panel.querySelector(".panel-chevron");
 
     panel.classList.toggle("collapsed", collapsed);
     toggle?.setAttribute("aria-expanded", String(!collapsed));
-    if (chevron) {
-      chevron.textContent = collapsed ? "Expand" : "Collapse";
-    }
   });
 }
 

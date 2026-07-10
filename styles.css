@@ -162,10 +162,13 @@ h1 {
 .panel {
   --panel-accent: var(--accent);
   --panel-glow: rgba(56, 189, 248, 0.12);
+  --panel-top: rgba(22, 34, 56, 0.96);
+  --panel-bottom: rgba(9, 18, 32, 0.96);
+  --panel-border: rgba(56, 189, 248, 0.3);
   background:
-    linear-gradient(180deg, rgba(22, 34, 56, 0.96), rgba(9, 18, 32, 0.96)),
-    radial-gradient(circle at top left, var(--panel-glow), transparent 38%);
-  border: 1px solid rgba(226, 232, 240, 0.18);
+    radial-gradient(circle at top left, var(--panel-glow), transparent 46%),
+    linear-gradient(180deg, var(--panel-top), var(--panel-bottom));
+  border: 1px solid var(--panel-border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 18px;
@@ -174,17 +177,26 @@ h1 {
 
 .panel-sessions {
   --panel-accent: #fbbf24;
-  --panel-glow: rgba(251, 191, 36, 0.16);
+  --panel-glow: rgba(251, 191, 36, 0.3);
+  --panel-top: rgba(63, 48, 18, 0.97);
+  --panel-bottom: rgba(25, 19, 12, 0.97);
+  --panel-border: rgba(251, 191, 36, 0.42);
 }
 
 .panel-editor {
   --panel-accent: #38bdf8;
-  --panel-glow: rgba(56, 189, 248, 0.16);
+  --panel-glow: rgba(56, 189, 248, 0.28);
+  --panel-top: rgba(12, 45, 68, 0.97);
+  --panel-bottom: rgba(7, 23, 38, 0.97);
+  --panel-border: rgba(56, 189, 248, 0.42);
 }
 
 .panel-player {
   --panel-accent: #22c55e;
-  --panel-glow: rgba(34, 197, 94, 0.14);
+  --panel-glow: rgba(34, 197, 94, 0.26);
+  --panel-top: rgba(12, 57, 36, 0.97);
+  --panel-bottom: rgba(7, 28, 22, 0.97);
+  --panel-border: rgba(34, 197, 94, 0.42);
 }
 
 .panel-header,
@@ -231,9 +243,17 @@ h1 {
 }
 
 .panel-chevron {
-  color: var(--panel-accent);
-  font-size: 0.85rem;
-  font-weight: 700;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 10px solid var(--panel-accent);
+  transform: rotate(90deg);
+  transition: transform 160ms ease;
+}
+
+.panel.collapsed .panel-chevron {
+  transform: rotate(0deg);
 }
 
 .panel-body {
