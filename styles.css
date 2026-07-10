@@ -447,10 +447,12 @@ h1 {
   inset: 0;
   z-index: 20;
   display: none;
+  height: 100dvh;
   min-height: 100vh;
   padding: 28px;
   background: rgba(2, 6, 23, 0.97);
   color: var(--text);
+  overflow: hidden;
 }
 
 .training-mode.active {
@@ -481,6 +483,7 @@ h1 {
   gap: 18px;
   text-align: center;
   min-height: 0;
+  overflow: auto;
 }
 
 .training-round {
@@ -698,20 +701,84 @@ h1 {
   }
 
   .training-mode {
-    padding: 18px;
+    padding: 12px;
   }
 
-  .training-topbar,
-  .training-context {
+  .training-mode.active {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+
+  .training-topbar {
     align-items: stretch;
     flex-direction: column;
+    gap: 8px;
+  }
+
+  .training-topbar .eyebrow {
+    margin-bottom: 2px;
+  }
+
+  .training-topbar h2 {
+    font-size: 1rem;
+  }
+
+  .training-stage {
+    align-content: start;
+    gap: 10px;
+    padding: 4px 0;
+  }
+
+  .training-round {
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
   }
 
   .training-stage h1 {
-    font-size: 3.4rem;
+    max-width: 100%;
+    font-size: 2.4rem;
+    line-height: 1;
+    overflow-wrap: anywhere;
   }
 
   .training-time {
-    font-size: 5.4rem;
+    font-size: 4.3rem;
+    line-height: 0.9;
+  }
+
+  .training-note {
+    max-width: 100%;
+    font-size: 0.95rem;
+  }
+
+  .training-progress {
+    height: 14px;
+  }
+
+  .training-context {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .training-context div {
+    padding: 8px 10px;
+  }
+
+  .training-controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .training-controls button {
+    min-height: 46px;
+    padding: 0.6rem 0.7rem;
+  }
+
+  .training-start-btn,
+  #training-start-btn {
+    grid-column: span 2;
   }
 }
