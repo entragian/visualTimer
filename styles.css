@@ -136,8 +136,21 @@ h1 {
 
 .topbar-actions {
   display: flex;
+  align-items: center;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.version-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  background: rgba(15, 23, 42, 0.7);
+  font-size: 0.85rem;
 }
 
 .layout {
@@ -455,6 +468,26 @@ h1 {
   min-height: 56px;
 }
 
+.update-banner {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(420px, calc(100vw - 36px));
+  padding: 12px;
+  border: 1px solid rgba(125, 211, 252, 0.35);
+  border-radius: 12px;
+  background: rgba(8, 15, 28, 0.96);
+  box-shadow: var(--shadow);
+}
+
+.update-banner[hidden] {
+  display: none;
+}
+
 @media (max-width: 1180px) {
   .layout {
     grid-template-columns: 1fr;
@@ -496,6 +529,11 @@ h1 {
   .player-actions,
   .step-actions {
     width: 100%;
+  }
+
+  .version-badge {
+    width: 100%;
+    justify-content: center;
   }
 
   .topbar-actions button,

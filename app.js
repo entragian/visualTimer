@@ -1,3 +1,4 @@
+const APP_VERSION = "0.1.1";
 const STORAGE_KEY = "visualTimer.sessions.v1";
 
 const sampleData = [
@@ -83,6 +84,9 @@ const els = {
   trainingNextBtn: document.querySelector("#training-next-btn"),
   trainingPrevBtn: document.querySelector("#training-prev-btn"),
   trainingResetBtn: document.querySelector("#training-reset-btn"),
+  appVersion: document.querySelector("#app-version"),
+  updateBanner: document.querySelector("#update-banner"),
+  updateReloadBtn: document.querySelector("#update-reload-btn"),
   newSessionBtn: document.querySelector("#new-session-btn"),
   addBlockBtn: document.querySelector("#add-block-btn"),
   saveBtn: document.querySelector("#save-btn"),
@@ -102,6 +106,7 @@ render();
 registerServiceWorker();
 
 function bindEvents() {
+  els.appVersion.textContent = `v${APP_VERSION}`;
   els.newSessionBtn.addEventListener("click", createSession);
   els.addBlockBtn.addEventListener("click", addBlock);
   els.saveBtn.addEventListener("click", persistSessions);
@@ -117,6 +122,7 @@ function bindEvents() {
   els.trainingNextBtn.addEventListener("click", () => advanceTimer(1, true));
   els.trainingPrevBtn.addEventListener("click", () => advanceTimer(-1, true));
   els.trainingResetBtn.addEventListener("click", resetTimer);
+  els.updateReloadBtn.addEventListener("click", applyAvailableUpdate);
   els.sessionName.addEventListener("input", (event) => {
     const session = getSelectedSession();
     if (!session) return;
@@ -917,10 +923,43 @@ function cloneBlock(block) {
 async function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
   try {
-    await navigator.serviceWorker.register("service-worker.js");
+    const registration = await navigator.serviceWorker.register("service-worker.js");
+
+    if (registration.waiting) {
+      showUpdateBanner(registration.waiting);
+    }
+
+    registration.addEventListener("updatefound", () => {
+      const nextWorker = registration.installing;
+      if (!nextWorker) return;
+
+      nextWorker.addEventListener("statechange", () => {
+        if (nextWorker.state === "installed" && navigator.serviceWorker.controller) {
+          showUpdateBanner(nextWorker);
+        }
+      });
+    });
+
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      window.location.reload();
+    });
   } catch (error) {
     console.warn("Service worker registration failed", error);
   }
+}
+
+let pendingServiceWorker = null;
+
+function showUpdateBanner(worker) {
+  pendingServiceWorker = worker;
+  els.updateBanner.hidden = false;
+}
+
+function applyAvailableUpdate() {
+  if (!pendingServiceWorker) return;
+  pendingServiceWorker.postMessage({ type: "SKIP_WAITING" });
+  els.updateReloadBtn.disabled = true;
+  els.updateReloadBtn.textContent = "Updating...";
 }
 
 function escapeHtml(value) {
