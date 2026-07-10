@@ -1,5 +1,6 @@
 const APP_VERSION = "0.1.1";
 const STORAGE_KEY = "visualTimer.sessions.v1";
+const PANEL_STATE_KEY = "visualTimer.panels.v1";
 
 const sampleData = [
   {
@@ -87,6 +88,7 @@ const els = {
   appVersion: document.querySelector("#app-version"),
   updateBanner: document.querySelector("#update-banner"),
   updateReloadBtn: document.querySelector("#update-reload-btn"),
+  panelToggles: document.querySelectorAll("[data-panel-toggle]"),
   newSessionBtn: document.querySelector("#new-session-btn"),
   addBlockBtn: document.querySelector("#add-block-btn"),
   saveBtn: document.querySelector("#save-btn"),
@@ -107,6 +109,10 @@ registerServiceWorker();
 
 function bindEvents() {
   els.appVersion.textContent = `v${APP_VERSION}`;
+  restorePanelState();
+  els.panelToggles.forEach((toggle) => {
+    toggle.addEventListener("click", () => togglePanel(toggle.dataset.panelToggle));
+  });
   els.newSessionBtn.addEventListener("click", createSession);
   els.addBlockBtn.addEventListener("click", addBlock);
   els.saveBtn.addEventListener("click", persistSessions);
@@ -141,6 +147,53 @@ function render() {
   renderFlattenedPreview();
   renderPlayer();
   renderTrainingMode();
+}
+
+function togglePanel(panelName) {
+  const panel = document.querySelector(`[data-panel="${panelName}"]`);
+  if (!panel) return;
+
+  panel.classList.toggle("collapsed");
+  const collapsed = panel.classList.contains("collapsed");
+  const toggle = panel.querySelector("[data-panel-toggle]");
+  const chevron = panel.querySelector(".panel-chevron");
+
+  toggle?.setAttribute("aria-expanded", String(!collapsed));
+  if (chevron) {
+    chevron.textContent = collapsed ? "Expand" : "Collapse";
+  }
+
+  persistPanelState();
+}
+
+function restorePanelState() {
+  const collapsedPanels = loadPanelState();
+  document.querySelectorAll("[data-panel]").forEach((panel) => {
+    const panelName = panel.dataset.panel;
+    const collapsed = collapsedPanels.includes(panelName);
+    const toggle = panel.querySelector("[data-panel-toggle]");
+    const chevron = panel.querySelector(".panel-chevron");
+
+    panel.classList.toggle("collapsed", collapsed);
+    toggle?.setAttribute("aria-expanded", String(!collapsed));
+    if (chevron) {
+      chevron.textContent = collapsed ? "Expand" : "Collapse";
+    }
+  });
+}
+
+function persistPanelState() {
+  const collapsedPanels = [...document.querySelectorAll("[data-panel].collapsed")].map((panel) => panel.dataset.panel);
+  localStorage.setItem(PANEL_STATE_KEY, JSON.stringify(collapsedPanels));
+}
+
+function loadPanelState() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(PANEL_STATE_KEY) ?? "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
 }
 
 function renderSessionList() {
