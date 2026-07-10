@@ -1,4 +1,4 @@
-const APP_VERSION = "0.1.1";
+const APP_VERSION = "0.1.2";
 const STORAGE_KEY = "visualTimer.sessions.v1";
 const PANEL_STATE_KEY = "visualTimer.panels.v1";
 
@@ -106,6 +106,12 @@ if (!state.selectedSessionId) {
 bindEvents();
 render();
 registerServiceWorker();
+checkForAppUpdate();
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
+    checkForAppUpdate();
+  }
+});
 
 function bindEvents() {
   els.appVersion.textContent = `v${APP_VERSION}`;
@@ -994,17 +1000,38 @@ async function registerServiceWorker() {
 }
 
 let pendingServiceWorker = null;
+let updateFoundByVersionCheck = false;
 
 function showUpdateBanner(worker) {
   pendingServiceWorker = worker;
+  updateFoundByVersionCheck = false;
   els.updateBanner.hidden = false;
 }
 
 function applyAvailableUpdate() {
-  if (!pendingServiceWorker) return;
-  pendingServiceWorker.postMessage({ type: "SKIP_WAITING" });
+  if (pendingServiceWorker) {
+    pendingServiceWorker.postMessage({ type: "SKIP_WAITING" });
+  } else if (updateFoundByVersionCheck) {
+    window.location.reload();
+  }
   els.updateReloadBtn.disabled = true;
   els.updateReloadBtn.textContent = "Updating...";
+}
+
+async function checkForAppUpdate() {
+  try {
+    const response = await fetch(`version.json?ts=${Date.now()}`, { cache: "no-store" });
+    if (!response.ok) return;
+
+    const metadata = await response.json();
+    if (metadata.version && metadata.version !== APP_VERSION) {
+      pendingServiceWorker = null;
+      updateFoundByVersionCheck = true;
+      els.updateBanner.hidden = false;
+    }
+  } catch {
+    // Version checks are best-effort. Offline use should not be interrupted.
+  }
 }
 
 function escapeHtml(value) {
