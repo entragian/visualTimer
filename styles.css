@@ -449,9 +449,7 @@ h1 {
   display: none;
   min-height: 100vh;
   padding: 28px;
-  background:
-    linear-gradient(135deg, rgba(2, 6, 23, 0.96), rgba(6, 78, 59, 0.92)),
-    radial-gradient(circle at 20% 10%, rgba(125, 211, 252, 0.18), transparent 34%);
+  background: rgba(2, 6, 23, 0.97);
   color: var(--text);
 }
 
@@ -486,7 +484,7 @@ h1 {
 }
 
 .training-round {
-  color: var(--accent);
+  color: rgba(125, 211, 252, 0.82);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -506,7 +504,7 @@ h1 {
 
 .training-note {
   max-width: 760px;
-  color: var(--muted);
+  color: rgba(203, 213, 225, 0.74);
   font-size: 1.15rem;
 }
 
@@ -515,8 +513,8 @@ h1 {
   height: 22px;
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(226, 232, 240, 0.16);
-  border: 1px solid rgba(226, 232, 240, 0.18);
+  background: rgba(226, 232, 240, 0.08);
+  border: 1px solid rgba(226, 232, 240, 0.1);
 }
 
 .training-progress div {
@@ -536,14 +534,19 @@ h1 {
   gap: 6px;
   min-width: 0;
   padding: 12px;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(226, 232, 240, 0.1);
   border-radius: 8px;
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(15, 23, 42, 0.28);
 }
 
 .training-context span {
-  color: var(--muted);
+  color: rgba(148, 163, 184, 0.76);
   font-size: 0.85rem;
+}
+
+.training-controls button,
+.training-topbar button {
+  background: rgba(15, 23, 42, 0.62);
 }
 
 .training-context strong {
