@@ -1,4 +1,4 @@
-const APP_VERSION = "0.1.3";
+const APP_VERSION = "0.1.4";
 const STORAGE_KEY = "visualTimer.sessions.v1";
 const PANEL_STATE_KEY = "visualTimer.panels.v1";
 
@@ -975,6 +975,7 @@ async function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
   try {
     const registration = await navigator.serviceWorker.register("service-worker.js");
+    registration.update();
 
     if (registration.waiting) {
       showUpdateBanner(registration.waiting);
@@ -992,7 +993,7 @@ async function registerServiceWorker() {
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      window.location.reload();
+      hardReload();
     });
   } catch (error) {
     console.warn("Service worker registration failed", error);
@@ -1008,14 +1009,20 @@ function showUpdateBanner(worker) {
   els.updateBanner.hidden = false;
 }
 
-function applyAvailableUpdate() {
-  if (pendingServiceWorker) {
-    pendingServiceWorker.postMessage({ type: "SKIP_WAITING" });
-  } else if (updateFoundByVersionCheck) {
-    window.location.reload();
-  }
+async function applyAvailableUpdate() {
   els.updateReloadBtn.disabled = true;
   els.updateReloadBtn.textContent = "Updating...";
+
+  if (pendingServiceWorker) {
+    pendingServiceWorker.postMessage({ type: "SKIP_WAITING" });
+    window.setTimeout(hardReload, 1600);
+    return;
+  }
+
+  if (updateFoundByVersionCheck) {
+    await clearAppCaches();
+    hardReload();
+  }
 }
 
 async function checkForAppUpdate() {
@@ -1032,6 +1039,24 @@ async function checkForAppUpdate() {
   } catch {
     // Version checks are best-effort. Offline use should not be interrupted.
   }
+}
+
+async function clearAppCaches() {
+  if (!("caches" in window)) return;
+
+  try {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter((key) => key.startsWith("visualTimer-")).map((key) => caches.delete(key)));
+  } catch {
+    // Cache deletion is best-effort; a cache-busting navigation still follows.
+  }
+}
+
+function hardReload() {
+  const url = new URL(window.location.href);
+  url.searchParams.set("appVersion", APP_VERSION);
+  url.searchParams.set("refresh", Date.now().toString());
+  window.location.replace(url.toString());
 }
 
 function escapeHtml(value) {
