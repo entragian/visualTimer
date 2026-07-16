@@ -1,4 +1,4 @@
-const APP_VERSION = "0.1.5";
+const APP_VERSION = "0.1.6";
 const STORAGE_KEY = "visualTimer.sessions.v1";
 const PANEL_STATE_KEY = "visualTimer.panels.v1";
 
@@ -1041,13 +1041,12 @@ async function applyAvailableUpdate() {
 
   if (pendingServiceWorker) {
     pendingServiceWorker.postMessage({ type: "SKIP_WAITING" });
-    window.setTimeout(hardReload, 1600);
+    window.setTimeout(forceFreshAppLoad, 1600);
     return;
   }
 
   if (updateFoundByVersionCheck) {
-    await clearAppCaches();
-    hardReload();
+    await forceFreshAppLoad();
   }
 }
 
@@ -1078,8 +1077,25 @@ async function clearAppCaches() {
   }
 }
 
+async function unregisterServiceWorkers() {
+  if (!("serviceWorker" in navigator)) return;
+
+  try {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(registrations.map((registration) => registration.unregister()));
+  } catch {
+    // Unregistering is best-effort; cache-busting navigation still follows.
+  }
+}
+
+async function forceFreshAppLoad() {
+  await clearAppCaches();
+  await unregisterServiceWorkers();
+  hardReload();
+}
+
 function hardReload() {
-  const url = new URL(window.location.href);
+  const url = new URL(".", window.location.href);
   url.searchParams.set("appVersion", APP_VERSION);
   url.searchParams.set("refresh", Date.now().toString());
   window.location.replace(url.toString());
