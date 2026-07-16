@@ -26,7 +26,7 @@
           </p>
         </div>
         <div class="topbar-actions">
-          <span id="app-version" class="version-badge">v0.1.8</span>
+          <span id="app-version" class="version-badge">v0.1.9</span>
           <button id="new-session-btn" class="primary">New session</button>
           <button id="save-btn">Save</button>
         </div>
@@ -127,30 +127,20 @@
 
       <div class="training-stage">
         <div id="training-round" class="training-round">Round 0 of 0</div>
-        <div id="training-step-card" class="training-step-card">
-          <h1 id="training-step">No step selected</h1>
+
+        <div id="training-clock" class="training-clock">
+          <svg class="training-clock-face" viewBox="0 0 240 240" aria-hidden="true">
+            <circle class="training-clock-track" cx="120" cy="120" r="104"></circle>
+            <circle id="training-clock-progress" class="training-clock-progress" cx="120" cy="120" r="104"></circle>
+          </svg>
+          <div id="training-step-card" class="training-step-card">
+            <div id="training-time" class="training-time">00:00</div>
+            <h1 id="training-step">No step selected</h1>
+          </div>
         </div>
-        <div id="training-time" class="training-time">00:00</div>
+
         <p id="training-note" class="training-note">Start a session to enter training mode.</p>
-
-        <div class="training-progress" aria-hidden="true">
-          <div id="training-progress-fill"></div>
-        </div>
-
-        <div class="training-context">
-          <div>
-            <span>Previous</span>
-            <strong id="training-prev-step">None</strong>
-          </div>
-          <div>
-            <span>Status</span>
-            <strong id="training-status">Idle</strong>
-          </div>
-          <div>
-            <span>Next</span>
-            <strong id="training-next-step">None</strong>
-          </div>
-        </div>
+        <div id="training-next-step" class="training-next-step">Next: none</div>
       </div>
 
       <div class="training-controls">

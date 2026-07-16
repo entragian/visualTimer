@@ -1,4 +1,4 @@
-const APP_VERSION = "0.1.8";
+const APP_VERSION = "0.1.9";
 const STORAGE_KEY = "visualTimer.sessions.v1";
 const PANEL_STATE_KEY = "visualTimer.panels.v1";
 
@@ -72,14 +72,13 @@ const els = {
   trainingSession: document.querySelector("#training-session"),
   trainingBlock: document.querySelector("#training-block"),
   trainingRound: document.querySelector("#training-round"),
+  trainingClock: document.querySelector("#training-clock"),
+  trainingClockProgress: document.querySelector("#training-clock-progress"),
   trainingStepCard: document.querySelector("#training-step-card"),
   trainingStep: document.querySelector("#training-step"),
   trainingTime: document.querySelector("#training-time"),
   trainingNote: document.querySelector("#training-note"),
-  trainingProgressFill: document.querySelector("#training-progress-fill"),
-  trainingPrevStep: document.querySelector("#training-prev-step"),
   trainingNextStep: document.querySelector("#training-next-step"),
-  trainingStatus: document.querySelector("#training-status"),
   trainingCloseBtn: document.querySelector("#training-close-btn"),
   trainingStartBtn: document.querySelector("#training-start-btn"),
   trainingPauseBtn: document.querySelector("#training-pause-btn"),
@@ -381,8 +380,9 @@ function renderPlayer() {
 function renderTrainingMode() {
   const session = getSelectedSession();
   const details = getPlayerDetails();
-  const { activeItem, previousItem, nextItem, queue, remainingMs, progress } = details;
+  const { activeItem, nextItem, queue, remainingMs, progress } = details;
   const playable = queue.length > 0;
+  const stepColor = activeItem?.step.color ?? "#7dd3fc";
 
   els.trainingSession.textContent = session?.name ?? "visualTimer";
   els.trainingBlock.textContent = activeItem?.block.name ?? "No block selected";
@@ -390,13 +390,11 @@ function renderTrainingMode() {
     ? `Round ${activeItem.round} of ${activeItem.repeatCount} · step ${activeItem.index + 1} of ${queue.length}`
     : "Round 0 of 0";
   els.trainingStep.textContent = activeItem?.step.name ?? "No step selected";
-  els.trainingStepCard.style.setProperty("--step-color", activeItem?.step.color ?? "#7dd3fc");
+  els.trainingClock.style.setProperty("--step-color", stepColor);
   els.trainingTime.textContent = formatTime(Math.ceil(remainingMs / 1000));
   els.trainingNote.textContent = activeItem?.step.note || "No note for this step.";
-  els.trainingProgressFill.style.width = `${Math.max(0, Math.min(100, progress * 100))}%`;
-  els.trainingPrevStep.textContent = previousItem?.step.name ?? "None";
-  els.trainingNextStep.textContent = nextItem?.step.name ?? "None";
-  els.trainingStatus.textContent = playerStatusLabel();
+  els.trainingClockProgress.style.strokeDashoffset = String(653.45 * (1 - Math.max(0, Math.min(1, progress))));
+  els.trainingNextStep.textContent = nextItem ? `Next: ${nextItem.step.name} · ${nextItem.step.durationSeconds}s` : "Next: none";
 
   els.trainingStartBtn.disabled = !playable || state.player.status === "running";
   els.trainingPauseBtn.disabled = state.player.status !== "running" && state.player.status !== "paused";

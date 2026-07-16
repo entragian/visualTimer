@@ -500,8 +500,7 @@ h1 {
 }
 
 .training-topbar,
-.training-controls,
-.training-context {
+.training-controls {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -531,28 +530,63 @@ h1 {
   text-transform: uppercase;
 }
 
-.training-step-card {
+.training-clock {
   --step-color: #7dd3fc;
-  width: min(980px, 100%);
-  padding: clamp(18px, 4vw, 34px);
-  border: 2px solid var(--step-color);
-  border-radius: 18px;
-  background:
-    linear-gradient(180deg, rgba(15, 23, 42, 0.78), rgba(15, 23, 42, 0.42)),
-    linear-gradient(135deg, rgba(125, 211, 252, 0.16), transparent 62%);
-  box-shadow: 0 0 0 1px rgba(226, 232, 240, 0.06), 0 22px 80px rgba(56, 189, 248, 0.12);
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(520px, 76vh, 92vw);
+  aspect-ratio: 1;
+}
+
+.training-clock-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.training-clock-track,
+.training-clock-progress {
+  fill: none;
+  stroke-width: 16;
+}
+
+.training-clock-track {
+  stroke: rgba(226, 232, 240, 0.1);
+}
+
+.training-clock-progress {
+  stroke: var(--step-color);
+  stroke-linecap: round;
+  stroke-dasharray: 653.45;
+  stroke-dashoffset: 653.45;
+  transition: stroke-dashoffset 120ms linear;
+}
+
+.training-step-card {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  width: 72%;
+  padding: 24px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.64);
 }
 
 .training-stage h1 {
-  max-width: 1100px;
-  font-size: clamp(3.5rem, 12vw, 9rem);
-  line-height: 0.95;
+  max-width: 100%;
+  font-size: clamp(1.8rem, 5vw, 3.6rem);
+  line-height: 1;
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .training-time {
-  font-size: clamp(5rem, 18vw, 14rem);
-  line-height: 0.82;
+  font-size: clamp(4rem, 10vw, 7rem);
+  line-height: 0.9;
   font-weight: 900;
 }
 
@@ -562,40 +596,13 @@ h1 {
   font-size: 1.15rem;
 }
 
-.training-progress {
-  width: min(860px, 100%);
-  height: 22px;
-  overflow: hidden;
+.training-next-step {
+  max-width: min(520px, 100%);
+  padding: 0.65rem 0.9rem;
+  border: 1px solid rgba(226, 232, 240, 0.1);
   border-radius: 999px;
-  background: rgba(226, 232, 240, 0.08);
-  border: 1px solid rgba(226, 232, 240, 0.1);
-}
-
-.training-progress div {
-  height: 100%;
-  width: 0%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, #7dd3fc, #22c55e);
-  transition: width 120ms linear;
-}
-
-.training-context {
-  width: min(860px, 100%);
-}
-
-.training-context div {
-  display: grid;
-  gap: 6px;
-  min-width: 0;
-  padding: 12px;
-  border: 1px solid rgba(226, 232, 240, 0.1);
-  border-radius: 8px;
-  background: rgba(15, 23, 42, 0.28);
-}
-
-.training-context span {
-  color: rgba(148, 163, 184, 0.76);
-  font-size: 0.85rem;
+  color: rgba(203, 213, 225, 0.82);
+  background: rgba(15, 23, 42, 0.35);
 }
 
 .training-controls button,
@@ -606,12 +613,6 @@ h1 {
 .training-controls button.primary {
   background: linear-gradient(135deg, var(--accent-strong), #22c55e);
   color: #02111d;
-}
-
-.training-context strong {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .training-controls {
@@ -790,20 +791,22 @@ h1 {
     letter-spacing: 0.04em;
   }
 
-  .training-stage h1 {
-    max-width: 100%;
-    font-size: 2.4rem;
-    line-height: 1;
-    overflow-wrap: anywhere;
+  .training-clock {
+    width: min(360px, 86vw, 52vh);
   }
 
   .training-step-card {
-    padding: 14px;
-    border-radius: 14px;
+    gap: 8px;
+    width: 74%;
+    padding: 16px;
+  }
+
+  .training-stage h1 {
+    font-size: 1.55rem;
   }
 
   .training-time {
-    font-size: 4.3rem;
+    font-size: 3.8rem;
     line-height: 0.9;
   }
 
@@ -812,19 +815,9 @@ h1 {
     font-size: 0.95rem;
   }
 
-  .training-progress {
-    height: 14px;
-  }
-
-  .training-context {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-    width: 100%;
-  }
-
-  .training-context div {
-    padding: 8px 10px;
+  .training-next-step {
+    max-width: 100%;
+    font-size: 0.9rem;
   }
 
   .training-controls {
