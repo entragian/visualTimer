@@ -1,4 +1,4 @@
-const APP_VERSION = "0.1.7";
+const APP_VERSION = "0.1.8";
 const STORAGE_KEY = "visualTimer.sessions.v1";
 const PANEL_STATE_KEY = "visualTimer.panels.v1";
 
@@ -260,6 +260,7 @@ function renderEditor() {
     block.steps.forEach((step, stepIndex) => {
       const stepEl = document.createElement("article");
       stepEl.className = "step-card";
+      stepEl.style.setProperty("--step-color", step.color);
       stepEl.innerHTML = `
         <div class="step-header">
           <strong>Step ${stepIndex + 1}</strong>
