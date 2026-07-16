@@ -552,6 +552,11 @@ h1 {
   background: rgba(15, 23, 42, 0.62);
 }
 
+.training-controls button.primary {
+  background: linear-gradient(135deg, var(--accent-strong), #22c55e);
+  color: #02111d;
+}
+
 .training-context strong {
   overflow: hidden;
   text-overflow: ellipsis;

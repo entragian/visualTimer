@@ -1,4 +1,4 @@
-const APP_VERSION = "0.1.2";
+const APP_VERSION = "0.1.3";
 const STORAGE_KEY = "visualTimer.sessions.v1";
 const PANEL_STATE_KEY = "visualTimer.panels.v1";
 
