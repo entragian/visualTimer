@@ -427,6 +427,15 @@ h1 {
   gap: 10px;
 }
 
+.queue-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
 .sequence-item {
   padding: 0.8rem 0.95rem;
   border-radius: 14px;
@@ -434,12 +443,10 @@ h1 {
   border: 1px solid rgba(56, 189, 248, 0.16);
 }
 
-.roadmap {
-  margin: 0;
-  padding-left: 1.1rem;
-  display: grid;
-  gap: 0.6rem;
+.sequence-more {
   color: var(--muted);
+  text-align: center;
+  font-size: 0.9rem;
 }
 
 .training-mode {

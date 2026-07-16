@@ -1,4 +1,4 @@
-const APP_VERSION = "0.1.4";
+const APP_VERSION = "0.1.5";
 const STORAGE_KEY = "visualTimer.sessions.v1";
 const PANEL_STATE_KEY = "visualTimer.panels.v1";
 
@@ -319,12 +319,26 @@ function renderEditor() {
 function renderFlattenedPreview() {
   const session = getSelectedSession();
   if (!session) {
-    els.flattenedPreview.innerHTML = "<p class='muted'>Nothing to preview yet.</p>";
+    els.flattenedPreview.innerHTML = "<p class='muted'>No session selected.</p>";
     return;
   }
 
   const rows = flattenSession(session);
-  els.flattenedPreview.innerHTML = rows
+  if (!rows.length) {
+    els.flattenedPreview.innerHTML = "<p class='muted'>Add blocks and steps to build the queue.</p>";
+    return;
+  }
+
+  const totalSeconds = rows.reduce((sum, item) => sum + item.step.durationSeconds, 0);
+  const firstRows = rows.slice(0, 8);
+  const remainingCount = rows.length - firstRows.length;
+
+  els.flattenedPreview.innerHTML = `
+      <div class="queue-summary">
+        <span>${rows.length} step${rows.length === 1 ? "" : "s"}</span>
+        <span>${formatDuration(totalSeconds)}</span>
+      </div>
+      ${firstRows
     .map(
       (item, index) => `
         <div class="sequence-item">
@@ -335,7 +349,9 @@ function renderFlattenedPreview() {
         </div>
       `,
     )
-    .join("");
+    .join("")}
+      ${remainingCount > 0 ? `<div class="sequence-more">+ ${remainingCount} more</div>` : ""}
+    `;
 }
 
 function renderPlayer() {
@@ -846,6 +862,16 @@ function formatTime(totalSeconds) {
   const minutes = Math.floor(seconds / 60);
   const rest = seconds % 60;
   return `${String(minutes).padStart(2, "0")}:${String(rest).padStart(2, "0")}`;
+}
+
+function formatDuration(totalSeconds) {
+  const seconds = Math.max(0, Math.floor(totalSeconds));
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds % 60;
+
+  if (minutes <= 0) return `${rest}s`;
+  if (rest === 0) return `${minutes}m`;
+  return `${minutes}m ${rest}s`;
 }
 
 function triggerStepCue(current) {
