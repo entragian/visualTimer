@@ -1,4 +1,4 @@
-const APP_VERSION = "0.1.6";
+const APP_VERSION = "0.1.7";
 const STORAGE_KEY = "visualTimer.sessions.v1";
 const PANEL_STATE_KEY = "visualTimer.panels.v1";
 
@@ -72,6 +72,7 @@ const els = {
   trainingSession: document.querySelector("#training-session"),
   trainingBlock: document.querySelector("#training-block"),
   trainingRound: document.querySelector("#training-round"),
+  trainingStepCard: document.querySelector("#training-step-card"),
   trainingStep: document.querySelector("#training-step"),
   trainingTime: document.querySelector("#training-time"),
   trainingNote: document.querySelector("#training-note"),
@@ -388,6 +389,7 @@ function renderTrainingMode() {
     ? `Round ${activeItem.round} of ${activeItem.repeatCount} · step ${activeItem.index + 1} of ${queue.length}`
     : "Round 0 of 0";
   els.trainingStep.textContent = activeItem?.step.name ?? "No step selected";
+  els.trainingStepCard.style.setProperty("--step-color", activeItem?.step.color ?? "#7dd3fc");
   els.trainingTime.textContent = formatTime(Math.ceil(remainingMs / 1000));
   els.trainingNote.textContent = activeItem?.step.note || "No note for this step.";
   els.trainingProgressFill.style.width = `${Math.max(0, Math.min(100, progress * 100))}%`;
