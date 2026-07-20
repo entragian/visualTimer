@@ -1,4 +1,4 @@
-const APP_VERSION = "0.1.10";
+const APP_VERSION = "0.1.11";
 const STORAGE_KEY = "visualTimer.sessions.v1";
 const PANEL_STATE_KEY = "visualTimer.panels.v1";
 
@@ -1009,7 +1009,7 @@ async function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
   try {
     const registration = await navigator.serviceWorker.register("service-worker.js");
-    registration.update();
+    await registration.update();
 
     if (registration.waiting) {
       showUpdateBanner(registration.waiting);
@@ -1048,13 +1048,15 @@ async function applyAvailableUpdate() {
   els.updateReloadBtn.textContent = "Updating...";
 
   if (pendingServiceWorker) {
+    await clearAppCaches();
     pendingServiceWorker.postMessage({ type: "SKIP_WAITING" });
-    window.setTimeout(forceFreshAppLoad, 1600);
+    window.setTimeout(hardReload, 1600);
     return;
   }
 
   if (updateFoundByVersionCheck) {
-    await forceFreshAppLoad();
+    await clearAppCaches();
+    hardReload();
   }
 }
 
@@ -1083,23 +1085,6 @@ async function clearAppCaches() {
   } catch {
     // Cache deletion is best-effort; a cache-busting navigation still follows.
   }
-}
-
-async function unregisterServiceWorkers() {
-  if (!("serviceWorker" in navigator)) return;
-
-  try {
-    const registrations = await navigator.serviceWorker.getRegistrations();
-    await Promise.all(registrations.map((registration) => registration.unregister()));
-  } catch {
-    // Unregistering is best-effort; cache-busting navigation still follows.
-  }
-}
-
-async function forceFreshAppLoad() {
-  await clearAppCaches();
-  await unregisterServiceWorkers();
-  hardReload();
 }
 
 function hardReload() {
