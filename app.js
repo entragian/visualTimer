@@ -1,4 +1,4 @@
-const APP_VERSION = "0.1.9";
+const APP_VERSION = "0.1.10";
 const STORAGE_KEY = "visualTimer.sessions.v1";
 const PANEL_STATE_KEY = "visualTimer.panels.v1";
 
@@ -369,6 +369,7 @@ function renderPlayer() {
 
   const playable = queue.length > 0;
   els.playerStartBtn.disabled = !playable || state.player.status === "running";
+  els.playerStartBtn.textContent = state.player.status === "paused" ? "Resume" : "Start";
   els.playerPauseBtn.disabled = state.player.status !== "running" && state.player.status !== "paused";
   els.playerPauseBtn.textContent = state.player.status === "paused" ? "Resume" : "Pause";
   els.playerNextBtn.disabled = !playable;
@@ -397,6 +398,7 @@ function renderTrainingMode() {
   els.trainingNextStep.textContent = nextItem ? `Next: ${nextItem.step.name} · ${nextItem.step.durationSeconds}s` : "Next: none";
 
   els.trainingStartBtn.disabled = !playable || state.player.status === "running";
+  els.trainingStartBtn.textContent = state.player.status === "paused" ? "Resume" : "Start";
   els.trainingPauseBtn.disabled = state.player.status !== "running" && state.player.status !== "paused";
   els.trainingPauseBtn.textContent = state.player.status === "paused" ? "Resume" : "Pause";
   els.trainingNextBtn.disabled = !playable;
@@ -617,6 +619,11 @@ function moveStep(blockId, stepId, direction) {
 }
 
 function startTimer() {
+  if (state.player.status === "paused") {
+    resumeTimer();
+    return;
+  }
+
   const session = getSelectedSession();
   if (!session) return;
 

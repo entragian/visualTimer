@@ -1,4 +1,4 @@
-const APP_VERSION = "0.1.9";
+const APP_VERSION = "0.1.10";
 const CACHE_NAME = `visualTimer-v${APP_VERSION}`;
 const ASSETS = [
   ".",
