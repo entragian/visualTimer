@@ -1,4 +1,4 @@
-const APP_VERSION = "0.1.11";
+const APP_VERSION = "0.1.12";
 const STORAGE_KEY = "visualTimer.sessions.v1";
 const PANEL_STATE_KEY = "visualTimer.panels.v1";
 
@@ -89,6 +89,9 @@ const els = {
   updateBanner: document.querySelector("#update-banner"),
   updateReloadBtn: document.querySelector("#update-reload-btn"),
   panelToggles: document.querySelectorAll("[data-panel-toggle]"),
+  exportBtn: document.querySelector("#export-btn"),
+  importBtn: document.querySelector("#import-btn"),
+  importFile: document.querySelector("#import-file"),
   newSessionBtn: document.querySelector("#new-session-btn"),
   addBlockBtn: document.querySelector("#add-block-btn"),
   saveBtn: document.querySelector("#save-btn"),
@@ -135,6 +138,9 @@ function bindEvents() {
   els.trainingPrevBtn.addEventListener("click", () => advanceTimer(-1, true));
   els.trainingResetBtn.addEventListener("click", resetTimer);
   els.updateReloadBtn.addEventListener("click", applyAvailableUpdate);
+  els.exportBtn.addEventListener("click", exportSessions);
+  els.importBtn.addEventListener("click", () => els.importFile.click());
+  els.importFile.addEventListener("change", importSessions);
   els.sessionName.addEventListener("input", (event) => {
     const session = getSelectedSession();
     if (!session) return;
@@ -954,11 +960,17 @@ function renderSoundOptions(currentValue) {
 function normalizeSessions(sessions) {
   return sessions.map((session) => ({
     ...session,
+    id: session.id || crypto.randomUUID(),
+    name: session.name || "Imported session",
     blocks: (session.blocks ?? []).map((block) => ({
       ...block,
+      id: block.id || crypto.randomUUID(),
+      name: block.name || "Block",
       repeatCount: Math.max(1, Number(block.repeatCount) || 1),
       steps: (block.steps ?? []).map((step) => ({
         ...step,
+        id: step.id || crypto.randomUUID(),
+        name: step.name || "Step",
         durationSeconds: Math.max(1, Number(step.durationSeconds) || 1),
         color: step.color || "#7dd3fc",
         sound: normalizeSound(step.sound),
@@ -975,6 +987,65 @@ function normalizeSound(sound) {
   if (value === "soft" || value === "quiet") return "soft";
   if (value === "beep" || value === "default" || value === "finish") return "beep";
   return "beep";
+}
+
+function exportSessions() {
+  const backup = {
+    app: "visualTimer",
+    version: APP_VERSION,
+    exportedAt: new Date().toISOString(),
+    sessions: state.sessions,
+  };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  const date = new Date().toISOString().slice(0, 10);
+
+  link.href = url;
+  link.download = `visualTimer-sessions-${date}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function importSessions(event) {
+  const file = event.target.files?.[0];
+  event.target.value = "";
+  if (!file) return;
+
+  try {
+    const text = await file.text();
+    const parsed = JSON.parse(text);
+    const sessions = Array.isArray(parsed) ? parsed : parsed.sessions;
+
+    if (!Array.isArray(sessions)) {
+      window.alert("This file does not look like a visualTimer sessions backup.");
+      return;
+    }
+
+    const importedSessions = normalizeSessions(sessions);
+    if (!importedSessions.length) {
+      window.alert("The backup does not contain any sessions.");
+      return;
+    }
+
+    const shouldReplace = window.confirm(
+      `Import ${importedSessions.length} session${importedSessions.length === 1 ? "" : "s"}? This will replace sessions currently saved in this browser.`,
+    );
+    if (!shouldReplace) return;
+
+    stopPlayerTick();
+    closeTrainingMode();
+    state.sessions = importedSessions;
+    state.selectedSessionId = state.sessions[0]?.id ?? null;
+    state.player = createPlayerState();
+    persistSessions();
+    render();
+  } catch (error) {
+    console.warn("Session import failed", error);
+    window.alert("Could not import this backup file.");
+  }
 }
 
 function persistSessions() {
